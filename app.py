@@ -6,7 +6,21 @@ from scipy.stats import genextreme, gumbel_r
 import matplotlib.patheffects as pe
 
 st.set_page_config(page_title="Extreme Precipitation Analysis", layout="wide")
-st.title("🌧️ Extreme Precipitation Analysis")
+st.markdown(
+    """
+    <div style="
+        background-color:#461D7C;
+        color:white;
+        text-align:center;
+        padding:12px;
+        font-size:28px;
+        font-weight:bold;
+        border-radius:5px;">
+        🌧️ Extreme Precipitation Analysis
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     "Upload a CSV file containing precipitation values (one column of numbers). "
