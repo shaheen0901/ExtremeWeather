@@ -11,10 +11,11 @@ st.markdown(
     <div style="
         background-color:#461D7C;
         color:white;
+        padding:15px;
         text-align:center;
-        padding:12px;
-        font-size:28px;
+        font-size:1.8em;
         font-weight:bold;
+        margin-bottom:25px;  /* 👈 add space below the purple box */
         border-radius:5px;">
         🌧️ Extreme Precipitation Analysis
     </div>
