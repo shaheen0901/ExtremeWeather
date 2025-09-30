@@ -58,13 +58,13 @@ if st.button("Run Analysis"):
     gumbel_lower, gumbel_upper = np.percentile(gumbel_boot, [2.5, 97.5], axis=0)
 
     # --- Plot ---
-    fig, ax = plt.subplots(figsize=(8,6))
+    fig, ax = plt.subplots(figsize=(6,4))
 
-    ax.plot(rp, gev_levels, 'o-', color='red', lw=3.5, label='GEV')
+    ax.plot(rp, gev_levels, 'o-', color='red', lw=2.0, label='GEV')
     ax.plot(rp, gev_lower, ':', color='red', lw=1)
     ax.plot(rp, gev_upper, ':', color='red', lw=1)
 
-    ax.plot(rp, gumbel_levels, '-', color='black', lw=3.5, label='Gumbel')
+    ax.plot(rp, gumbel_levels, '-', color='black', lw=2.0, label='Gumbel')
     ax.scatter(rp, gumbel_levels, marker='^', color='black', s=40)
     ax.plot(rp, gumbel_lower, ':', color='black', lw=1)
     ax.plot(rp, gumbel_upper, ':', color='black', lw=1)
@@ -85,3 +85,11 @@ if st.button("Run Analysis"):
     plt.xticks(rp, labels=[str(r) for r in rp])  # exact ticks
 
     st.pyplot(fig)
+
+    st.markdown(
+    "<div style='text-align:center; font-size:0.9em; margin-top:15px;'>"
+    "Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — "
+    "School of Public Health, LSUHSC"
+    "</div>",
+    unsafe_allow_html=True
+)
