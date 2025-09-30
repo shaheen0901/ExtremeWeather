@@ -86,10 +86,19 @@ if st.button("Run Analysis"):
 
     st.pyplot(fig)
 
-    st.markdown(
-    "<div style='text-align:center; font-size:0.9em; margin-top:15px;'>"
-    "Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — "
-    "School of Public Health, LSUHSC"
-    "</div>",
+st.markdown(
+    """
+    <div style="
+        text-align:center;
+        font-size:0.9em;
+        margin-top:15px;
+        background-color:#461D7C;  /* LSU purple */
+        color:white;
+        padding:8px;
+        border-radius:5px;">
+        Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — 
+        School of Public Health, LSUHSC New Orleans
+    </div>
+    """,
     unsafe_allow_html=True
 )
