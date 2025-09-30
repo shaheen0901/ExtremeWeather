@@ -45,6 +45,27 @@ df = pd.read_csv(uploaded_file)
 x = pd.to_numeric(df.values.flatten(), errors='coerce')
 x = x[~np.isnan(x)]
 
+st.markdown(
+    """
+    <style>
+    div.stButton > button:first-child {
+        background-color: #461D7C;
+        color: white;
+        font-weight: bold;
+        border-radius:5px;
+        border: none;
+        padding: 0.5em 1em;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #5A2DA8; /* slightly lighter purple on hover */
+        color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 if st.button("Run Analysis"):
     # --- Fit parameters ---
     shape, loc, scale = genextreme.fit(x)
