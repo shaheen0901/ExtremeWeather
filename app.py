@@ -131,25 +131,27 @@ if st.button("Run Analysis"):
     ax.set_xticklabels(rp)
     ax.legend()
 
-    # ---- Center the figure at 50% width ----
+    # ---- Center the figure at 50% width and scale ----
     st.markdown(
         """
-        <div style="display: flex; justify-content: center;">
-            <div style="width: 50%;">
+        <style>
+        .centered-plot {
+            display: flex;
+            justify-content: center;
+        }
+        .centered-plot img {
+            width: 50% !important;   /* force 50% of screen width */
+            height: auto !important; /* keep aspect ratio */
+        }
+        </style>
         """,
         unsafe_allow_html=True
     )
 
-    st.pyplot(fig, use_container_width=True)
-
-    st.markdown(
-        """
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
+    # Wrap the figure in a div with our class
+    st.markdown("<div class='centered-plot'>", unsafe_allow_html=True)
+    st.pyplot(fig)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
     # ---------- FOOTER ----------
