@@ -112,7 +112,7 @@ if st.button("Run Analysis"):
         ax.text(x_rp, y_val + 0.3, f'{y_val:.1f}', color='red',
                 ha='center', fontsize=8)
     for x_rp, y_val in zip(rp, gumbel_levels):
-        ax.text(x_rp, y_val - 0.5, f'{y_val:.1f}', color='black',
+        ax.text(x_rp, y_val - 1.0, f'{y_val:.1f}', color='blue',
                 ha='center', fontsize=8,
                 path_effects=[pe.withStroke(linewidth=2, foreground="white")])
 
