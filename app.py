@@ -124,7 +124,7 @@ if st.button("Run Analysis"):
     for x_rp, y_val in zip(rp, gev_levels):
         ax.text(x_rp, y_val + 0.5, f'{y_val:.1f}', color='red', ha='center', fontsize=8)
     for x_rp, y_val in zip(rp, gumbel_levels):
-        ax.text(x_rp, y_val - 1.0, f'{y_val:.1f}', color='blue', ha='center', fontsize=8)
+        ax.text(x_rp, y_val - 1.5, f'{y_val:.1f}', color='blue', ha='center', fontsize=8)
 
     ax.set_xlabel("Return Period (years)")
     ax.set_ylabel("Precip (in)")
