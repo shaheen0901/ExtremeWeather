@@ -1,83 +1,93 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.stats import genextreme, gumbel_r
-import matplotlib.patheffects as pe
+import matplotlib.pyplot as plt
 
+# ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Extreme Precipitation Analysis", layout="wide")
-st.markdown(
-    """
-    <div style="
-        background-color:#461D7C;
-        color:white;
-        padding:15px;
-        text-align:center;
-        font-size:1.8em;
-        font-weight:bold;
-        margin-bottom:25px;  /* 👈 add space below the purple box */
-        border-radius:5px;">
-        🌧️ Extreme Precipitation Analysis
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    "Upload a CSV file containing precipitation values (one column of numbers). "
-    "Click **Run Analysis** to estimate return levels."
-)
-
-# File upload
-uploaded_file = st.file_uploader("Upload Precipitation CSV", type=["csv"])
-
-# Return periods selector
-default_rp = [2, 5, 10, 25, 50, 100]
-rp = st.multiselect("Select Return Periods (years):", default_rp, default=default_rp)
-rp = np.array(rp)
-p = 1 - 1/rp
-
-# Load data
-if uploaded_file is None:
-    st.info("No file uploaded. Please upload a CSV.")
-    st.stop()
-
-df = pd.read_csv(uploaded_file)
-x = pd.to_numeric(df.values.flatten(), errors='coerce')
-x = x[~np.isnan(x)]
-
+# ---------- CUSTOM STYLES ----------
 st.markdown(
     """
     <style>
+    /* LSU purple header */
+    .header {
+        background-color: #461D7C;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        font-size: 28px;
+        font-weight: bold;
+        border-radius: 6px;
+    }
+
+    /* LSU button styling */
     div.stButton > button:first-child {
         background-color: #461D7C;
         color: white;
         font-weight: bold;
-        border-radius:5px;
-        border: none;
-        padding: 0.5em 1em;
+        border-radius: 6px;
     }
-    div.stButton > button:first-child:hover {
-        background-color: #5A2DA8; /* slightly lighter purple on hover */
+    div.stButton > button:hover {
+        background-color: #5e2ea7;
         color: white;
+    }
+
+    /* Footer credit */
+    .footer {
+        background-color: #461D7C;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        font-size: 14px;
+        margin-top: 15px;
+        border-radius: 6px;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# ---------- HEADER ----------
+st.markdown("<div class='header'>🌧️ Extreme Precipitation Analysis</div>", unsafe_allow_html=True)
 
+st.write("Upload a CSV file containing precipitation values (one column of numbers). "
+         "Click **Run Analysis** to estimate return levels.")
+
+# ---------- FILE UPLOAD ----------
+uploaded_file = st.file_uploader("Upload Precipitation CSV", type=["csv"])
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+else:
+    st.info("Using default sample dataset (NOLA_Precip.csv in repo).")
+    df = pd.read_csv("NOLA_Precip.csv")  # keep a sample file in repo
+
+x = pd.to_numeric(df.values.flatten(), errors='coerce')
+x = x[~np.isnan(x)]
+
+return_periods = st.multiselect(
+    "Select Return Periods (years):",
+    [2, 5, 10, 25, 50, 100],
+    default=[2, 5, 10, 25, 50, 100]
+)
+
+# ---------- BUTTON ----------
 if st.button("Run Analysis"):
+    rp = np.array(return_periods)
+    p = 1 - 1 / rp
+
     # --- Fit parameters ---
     shape, loc, scale = genextreme.fit(x)
     loc_g, scale_g = gumbel_r.fit(x)
 
-    # --- Point estimates of return levels ---
+    # --- Point estimates ---
     gev_levels = genextreme.ppf(p, shape, loc=loc, scale=scale)
     gumbel_levels = gumbel_r.ppf(p, loc=loc_g, scale=scale_g)
 
     # --- Bootstrap 95% CI ---
-    nboot = 200  # keep modest for speed
+    nboot = 200  # modest for speed
     rng = np.random.default_rng()
 
     gev_boot = np.zeros((nboot, len(rp)))
@@ -94,49 +104,40 @@ if st.button("Run Analysis"):
     gumbel_lower, gumbel_upper = np.percentile(gumbel_boot, [2.5, 97.5], axis=0)
 
     # --- Plot ---
-    fig, ax = plt.subplots(figsize=(4,3))
+    fig, ax = plt.subplots(figsize=(10, 6))  # adjust size
+    ax.grid(True, which='both', linestyle=':')
 
-    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.0, label='GEV',
-            markersize=3, markerfacecolor='red')
+    # GEV line
+    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.8, label='GEV',
+            markersize=6, markerfacecolor='red')
+    ax.plot(rp, gev_lower, ':', color='red', lw=0.8)
+    ax.plot(rp, gev_upper, ':', color='red', lw=0.8)
 
-    ax.plot(rp, gev_lower, ':', color='red', lw=0.5)
-    ax.plot(rp, gev_upper, ':', color='red', lw=0.5)
+    # Gumbel line
+    ax.plot(rp, gumbel_levels, '-', color='blue', lw=1.8, label='Gumbel')
+    ax.scatter(rp, gumbel_levels, marker='^', color='black', s=35)
+    ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.8)
+    ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.8)
 
-    ax.plot(rp, gumbel_levels, '-', color='blue', lw=1.0, label='Gumbel')
-    ax.scatter(rp, gumbel_levels, marker='*', color='blue', s=20)
-    ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.5)
-    ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.5)
-
-    # Annotate values
+    # Annotations
     for x_rp, y_val in zip(rp, gev_levels):
-        ax.text(x_rp, y_val + 0.5, f'{y_val:.1f}', color='red',
+        ax.text(x_rp, y_val + 0.3, f'{y_val:.1f}', color='red',
                 ha='center', fontsize=8)
     for x_rp, y_val in zip(rp, gumbel_levels):
-        ax.text(x_rp, y_val - 1.0, f'{y_val:.1f}', color='blue',
-                ha='center', fontsize=8,
-                path_effects=[pe.withStroke(linewidth=2, foreground="white")])
+        ax.text(x_rp, y_val - 0.5, f'{y_val:.1f}', color='blue',
+                ha='center', fontsize=8)
 
-    ax.set_xlabel('Return Period (years)')
-    ax.set_ylabel('Precip (in)')
-    ax.grid(True, which='both', linestyle=':')
+    ax.set_xlabel("Return Period (years)")
+    ax.set_ylabel("Precip (in)")
+    ax.set_xscale('log')
+    ax.set_xticks(rp)
+    ax.set_xticklabels(rp)
     ax.legend()
-    plt.xticks(rp, labels=[str(r) for r in rp])  # exact ticks
 
-    st.pyplot(fig)
+    st.pyplot(fig, use_container_width=True)
 
+# ---------- FOOTER ----------
 st.markdown(
-    """
-    <div style="
-        text-align:center;
-        font-size:0.9em;
-        margin-top:15px;
-        background-color:#461D7C;  /* LSU purple */
-        color:white;
-        padding:8px;
-        border-radius:5px;">
-        Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — 
-        School of Public Health, LSUHSC New Orleans
-    </div>
-    """,
+    "<div class='footer'>Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — School of Public Health, LSUHSC New Orleans</div>",
     unsafe_allow_html=True
 )
