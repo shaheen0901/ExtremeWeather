@@ -42,7 +42,7 @@ st.markdown(
         text-align: center;
         padding: 8px;
         font-size: 14px;
-        margin-top: 15px;
+        margin-top: 20px;
         border-radius: 6px;
     }
     </style>
@@ -104,14 +104,13 @@ if st.button("Run Analysis"):
     gev_lower, gev_upper = np.percentile(gev_boot, [2.5, 97.5], axis=0)
     gumbel_lower, gumbel_upper = np.percentile(gumbel_boot, [2.5, 97.5], axis=0)
 
-        # --- Plot ---
-    fig, ax = plt.subplots(figsize=(8, 5))
+    # --- Plot ---
+    fig, ax = plt.subplots(figsize=(8, 5))  # smaller
 
     ax.grid(True, which='both', linestyle=':')
 
     # GEV line
-    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.5, label='GEV',
-            markersize=4, markerfacecolor='red')
+    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.5, label='GEV', markersize=4)
     ax.plot(rp, gev_lower, ':', color='red', lw=0.7)
     ax.plot(rp, gev_upper, ':', color='red', lw=0.7)
 
@@ -121,8 +120,11 @@ if st.button("Run Analysis"):
     ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.7)
     ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.7)
 
-    # annotations...
-    # (your annotation code here)
+    # Annotations
+    for x_rp, y_val in zip(rp, gev_levels):
+        ax.text(x_rp, y_val + 0.3, f'{y_val:.1f}', color='red', ha='center', fontsize=8)
+    for x_rp, y_val in zip(rp, gumbel_levels):
+        ax.text(x_rp, y_val - 0.5, f'{y_val:.1f}', color='blue', ha='center', fontsize=8)
 
     ax.set_xlabel("Return Period (years)")
     ax.set_ylabel("Precip (in)")
@@ -131,31 +133,14 @@ if st.button("Run Analysis"):
     ax.set_xticklabels(rp)
     ax.legend()
 
-    # ---- Center the figure at 50% width and scale ----
-    st.markdown(
-        """
-        <style>
-        .centered-plot {
-            display: flex;
-            justify-content: center;
-        }
-        .centered-plot img {
-            width: 50% !important;   /* force 50% of screen width */
-            height: auto !important; /* keep aspect ratio */
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # ---- Center the figure at 50% width using columns ----
+    col1, col2, col3 = st.columns([1, 2, 1])  # middle column ~50% width
+    with col2:
+        st.pyplot(fig, clear_figure=False)
 
-    # Wrap the figure in a div with our class
-    st.markdown("<div class='centered-plot'>", unsafe_allow_html=True)
-    st.pyplot(fig)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-
-    # ---------- FOOTER ----------
-    st.markdown(
-        "<div class='footer'>Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — School of Public Health, LSUHSC New Orleans</div>",
-        unsafe_allow_html=True
+# ---------- FOOTER ----------
+st.markdown(
+    "<div class='footer'>Developed and deployed by <b>Md Shahinoor Rahman, PhD</b> — "
+    "School of Public Health, LSUHSC New Orleans</div>",
+    unsafe_allow_html=True
 )
