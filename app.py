@@ -122,9 +122,9 @@ if st.button("Run Analysis"):
 
     # Annotations
     for x_rp, y_val in zip(rp, gev_levels):
-        ax.text(x_rp, y_val + 0.3, f'{y_val:.1f}', color='red', ha='center', fontsize=8)
+        ax.text(x_rp, y_val + 0.5, f'{y_val:.1f}', color='red', ha='center', fontsize=8)
     for x_rp, y_val in zip(rp, gumbel_levels):
-        ax.text(x_rp, y_val - 0.5, f'{y_val:.1f}', color='blue', ha='center', fontsize=8)
+        ax.text(x_rp, y_val - 1.0, f'{y_val:.1f}', color='blue', ha='center', fontsize=8)
 
     ax.set_xlabel("Return Period (years)")
     ax.set_ylabel("Precip (in)")
@@ -134,7 +134,7 @@ if st.button("Run Analysis"):
     ax.legend()
 
     # ---- Center the figure at 50% width using columns ----
-    col1, col2, col3 = st.columns([1, 2, 1])  # middle column ~50% width
+    col1, col2, col3 = st.columns([2, 6, 2])  # middle column ~60% width
     with col2:
         st.pyplot(fig, clear_figure=False)
 
