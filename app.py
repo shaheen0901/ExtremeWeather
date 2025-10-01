@@ -96,14 +96,16 @@ if st.button("Run Analysis"):
     # --- Plot ---
     fig, ax = plt.subplots(figsize=(6,4))
 
-    ax.plot(rp, gev_levels, 'o-', color='red', lw=2.0, label='GEV')
-    ax.plot(rp, gev_lower, ':', color='red', lw=1)
-    ax.plot(rp, gev_upper, ':', color='red', lw=1)
+    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.5, label='GEV',
+            markersize=4, markerfacecolor='red')
 
-    ax.plot(rp, gumbel_levels, '-', color='black', lw=2.0, label='Gumbel')
-    ax.scatter(rp, gumbel_levels, marker='^', color='black', s=40)
-    ax.plot(rp, gumbel_lower, ':', color='black', lw=1)
-    ax.plot(rp, gumbel_upper, ':', color='black', lw=1)
+    ax.plot(rp, gev_lower, ':', color='red', lw=0.75)
+    ax.plot(rp, gev_upper, ':', color='red', lw=0.75)
+
+    ax.plot(rp, gumbel_levels, '-', color='blue', lw=1.5, label='Gumbel')
+    ax.scatter(rp, gumbel_levels, marker='^', color='blue', s=30)
+    ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.75)
+    ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.75)
 
     # Annotate values
     for x_rp, y_val in zip(rp, gev_levels):
