@@ -94,22 +94,22 @@ if st.button("Run Analysis"):
     gumbel_lower, gumbel_upper = np.percentile(gumbel_boot, [2.5, 97.5], axis=0)
 
     # --- Plot ---
-    fig, ax = plt.subplots(figsize=(6,4))
+    fig, ax = plt.subplots(figsize=(4,3))
 
-    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.5, label='GEV',
-            markersize=4, markerfacecolor='red')
+    ax.plot(rp, gev_levels, 'o-', color='red', lw=1.0, label='GEV',
+            markersize=3, markerfacecolor='red')
 
-    ax.plot(rp, gev_lower, ':', color='red', lw=0.75)
-    ax.plot(rp, gev_upper, ':', color='red', lw=0.75)
+    ax.plot(rp, gev_lower, ':', color='red', lw=0.5)
+    ax.plot(rp, gev_upper, ':', color='red', lw=0.5)
 
-    ax.plot(rp, gumbel_levels, '-', color='blue', lw=1.5, label='Gumbel')
-    ax.scatter(rp, gumbel_levels, marker='^', color='blue', s=30)
-    ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.75)
-    ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.75)
+    ax.plot(rp, gumbel_levels, '-', color='blue', lw=1.0, label='Gumbel')
+    ax.scatter(rp, gumbel_levels, marker='*', color='blue', s=20)
+    ax.plot(rp, gumbel_lower, ':', color='blue', lw=0.5)
+    ax.plot(rp, gumbel_upper, ':', color='blue', lw=0.5)
 
     # Annotate values
     for x_rp, y_val in zip(rp, gev_levels):
-        ax.text(x_rp, y_val + 0.3, f'{y_val:.1f}', color='red',
+        ax.text(x_rp, y_val + 0.5, f'{y_val:.1f}', color='red',
                 ha='center', fontsize=8)
     for x_rp, y_val in zip(rp, gumbel_levels):
         ax.text(x_rp, y_val - 1.0, f'{y_val:.1f}', color='blue',
